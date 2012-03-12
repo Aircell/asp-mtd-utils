@@ -1,6 +1,6 @@
-CC := $(CROSS)gcc
-AR := $(CROSS)ar
-RANLIB := $(CROSS)ranlib
+CC := agcc
+AR := arm-eabi-ar
+RANLIB := arm-eabi-ranlib
 
 # Stolen from Linux build system
 comma = ,
@@ -80,6 +80,8 @@ ifneq ($(BUILDDIR),$(CURDIR))
 	$(Q)mkdir -p $(dir $@)
 endif
 	$(call BECHO,CC)
+	echo $(CPPFLAGS)
+	echo $(CFLAGS)
 	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep
 
 .SUFFIXES:
