@@ -429,7 +429,7 @@ static int type_str2int(const char *str)
 static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_num)
 {
 	struct stat st;
-	int i, major, minor;
+	int i, majr, minr;
 	struct mtd_info info;
 
 	if (stat(node, &st))
@@ -441,8 +441,8 @@ static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_num)
 		return -1;
 	}
 
-	major = major(st.st_rdev);
-	minor = minor(st.st_rdev);
+	majr = major(st.st_rdev);
+	minr = minor(st.st_rdev);
 
 	if (mtd_get_info((libmtd_t *)lib, &info))
 		return -1;
@@ -459,7 +459,7 @@ static int dev_node2num(struct libmtd *lib, const char *node, int *mtd_num)
 			return -1;
 		}
 
-		if (major1 == major && minor1 == minor) {
+		if (major1 == majr && minor1 == minr) {
 			errno = 0;
 			*mtd_num = i;
 			return 0;
@@ -1369,7 +1369,7 @@ int mtd_probe_node(libmtd_t desc, const char *node)
 {
 	struct stat st;
 	struct mtd_info info;
-	int i, major, minor;
+	int i, majr, minr;
 	struct libmtd *lib = (struct libmtd *)desc;
 
 	if (stat(node, &st))
@@ -1381,8 +1381,8 @@ int mtd_probe_node(libmtd_t desc, const char *node)
 		return -1;
 	}
 
-	major = major(st.st_rdev);
-	minor = minor(st.st_rdev);
+	majr = major(st.st_rdev);
+	minr = minor(st.st_rdev);
 
 	if (mtd_get_info((libmtd_t *)lib, &info))
 		return -1;
@@ -1402,7 +1402,7 @@ int mtd_probe_node(libmtd_t desc, const char *node)
 			return -1;
 		}
 
-		if (major1 == major && minor1 == minor)
+		if (major1 == majr && minor1 == minr)
 			return 1;
 	}
 

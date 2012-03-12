@@ -5,7 +5,7 @@ RANLIB := arm-eabi-ranlib
 # Stolen from Linux build system
 comma = ,
 try-run = $(shell set -e; ($(1)) >/dev/null 2>&1 && echo "$(2)" || echo "$(3)")
-cc-option = $(call try-run, $(CC) $(1) -c -xc /dev/null -o /dev/null,$(1),$(2))
+cc-option = $(call try-run, $(CC) $(1) -xc /dev/null -o /dev/null,$(1),$(2))
 
 CFLAGS ?= -O2 -g
 WFLAGS := -Wall \
@@ -20,13 +20,6 @@ ifneq ($(WITHOUT_LARGEFILE), 1)
   CPPFLAGS += -D_FILE_OFFSET_BITS=64
 endif
 
-DESTDIR?=
-PREFIX=/usr
-EXEC_PREFIX=$(PREFIX)
-SBINDIR=$(EXEC_PREFIX)/sbin
-MANDIR=$(PREFIX)/share/man
-INCLUDEDIR=$(PREFIX)/include
-
 ifndef BUILDDIR
 ifeq ($(origin CROSS),undefined)
   BUILDDIR := $(CURDIR)
@@ -36,6 +29,14 @@ else
 endif
 endif
 override BUILDDIR := $(patsubst %/,%,$(BUILDDIR))
+
+DESTDIR?=
+PREFIX=$(BUILDDIR)/out
+EXEC_PREFIX=$(PREFIX)
+SBINDIR=$(EXEC_PREFIX)/sbin
+MANDIR=$(PREFIX)/share/man
+INCLUDEDIR=$(PREFIX)/include
+
 
 override TARGETS := $(addprefix $(BUILDDIR)/,$(TARGETS))
 
@@ -80,8 +81,6 @@ ifneq ($(BUILDDIR),$(CURDIR))
 	$(Q)mkdir -p $(dir $@)
 endif
 	$(call BECHO,CC)
-	echo $(CPPFLAGS)
-	echo $(CFLAGS)
 	$(Q)$(CC) $(CPPFLAGS) $(CFLAGS) -c -o $@ $< -g -Wp,-MD,$(BUILDDIR)/.$(<F).dep
 
 .SUFFIXES:

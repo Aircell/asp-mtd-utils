@@ -18,9 +18,9 @@ TESTS = tests
 
 MTD_BINS = \
 	ftl_format flash_erase nanddump doc_loadbios \
-	ftl_check mkfs.jffs2 flash_lock flash_unlock \
+	ftl_check flash_lock flash_unlock \
 	flash_otp_info flash_otp_dump mtd_debug flashcp nandwrite nandtest \
-	jffs2dump \
+#	mkfs.jffs2 jffs2dump \
 	nftldump nftl_format docfdisk \
 	rfddump rfdformat \
 	serve_image recv_image \
@@ -30,13 +30,13 @@ UBI_BINS = \
 	ubidetach ubinize ubiformat ubirename mtdinfo ubirsvol
 
 BINS = $(MTD_BINS)
-BINS += mkfs.ubifs/mkfs.ubifs
-BINS += $(addprefix ubi-utils/,$(UBI_BINS))
+#BINS += mkfs.ubifs/mkfs.ubifs
+#BINS += $(addprefix ubi-utils/,$(UBI_BINS))
 SCRIPTS = flash_eraseall
 
 TARGETS = $(BINS)
 TARGETS += lib/libmtd.a
-TARGETS += ubi-utils/libubi.a
+#TARGETS += ubi-utils/libubi.a
 
 OBJDEPS = $(BUILDDIR)/include/version.h
 
@@ -50,6 +50,11 @@ ifneq ($(BUILDDIR),$(CURDIR))
 endif
 endif
 endif
+ifneq ($(PREFIX),)
+ifneq ($(BUILDDIR),$(PREFIX))
+	rm -rf $(PREFIX)
+endif
+endif
 	@if test -d "$(BUILDDIR)/"; then \
 		find $(BUILDDIR)/ -xdev \
 			'(' -name '*.[ao]' -o -name '.*.c.dep' ')' \
@@ -61,9 +66,9 @@ endif
 install:: $(addprefix $(BUILDDIR)/,${BINS}) ${SCRIPTS}
 	mkdir -p ${DESTDIR}/${SBINDIR}
 	install -m 0755 $^ ${DESTDIR}/${SBINDIR}/
-	mkdir -p ${DESTDIR}/${MANDIR}/man1
-	install -m 0644 mkfs.jffs2.1 ${DESTDIR}/${MANDIR}/man1/
-	-gzip -9f ${DESTDIR}/${MANDIR}/man1/*.1
+	#mkdir -p ${DESTDIR}/${MANDIR}/man1
+	#install -m 0644 mkfs.jffs2.1 ${DESTDIR}/${MANDIR}/man1/
+	#-gzip -9f ${DESTDIR}/${MANDIR}/man1/*.1
 
 tests::
 	$(MAKE) -C $(TESTS)
