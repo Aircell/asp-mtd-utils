@@ -1,0 +1,17 @@
+*.o
+out/
+doc_loadbios
+flash_erase
+flash_lock
+flash_otp_dump
+flash_otp_info
+flash_unlock
+flashcp
+ftl_check
+ftl_format
+include/version.h
+lib/libmtd.a
+mtd_debug
+nanddump
+nandtest
+nandwrite
